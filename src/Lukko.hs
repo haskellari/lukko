@@ -24,6 +24,10 @@ import Lukko.Internal
 
 #if defined(USE_OFD_LOCKING)
 import qualified Lukko.OFD as Impl
+#elif defined(USE_FLOCK)
+import qualified Lukko.FLock as Impl
+#else
+import qualified Lukko.NoOp as Impl
 #endif
 
 -------------------------------------------------------------------------------
