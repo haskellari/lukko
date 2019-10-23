@@ -1,0 +1,116 @@
+cabal-version: 2.4
+name:          lukko
+version:       0.1
+synopsis:      File locking
+category:      System, Locking
+description:
+  File locking in various flavours.
+  .
+  /Lukko/ means lock in Finnish.
+
+maintainer:    Oleg Grenrus <oleg.grenrus@iki.fi>
+license:       BSD-3-Clause
+license-file:  LICENSE
+build-type:    Simple
+tested-with:
+  GHC ==7.6.3
+   || ==7.8.4
+   || ==7.10.3
+   || ==8.0.2
+   || ==8.2.2
+   || ==8.4.4
+   || ==8.6.5
+   || ==8.8.1
+
+source-repository head
+  type:     git
+  location: https://github.com/phadej/lukko/
+
+library
+  default-language:   Haskell2010
+  hs-source-dirs:     src
+  build-depends:      base >=4.6 && <4.14
+  build-tool-depends: hsc2hs:hsc2hs >=0.67 && <0.69
+
+  -- Main library module
+  exposed-modules:
+    Lukko
+    Lukko.NoOp
+
+  if os(windows)
+    hs-source-dirs: src-windows
+    hs-source-dirs: src-noop
+    cpp-options:    -DUSE_WINDOWS_LOCK
+
+  elif os(linux)
+    hs-source-dirs:  src-ofd
+    hs-source-dirs:  src-flock
+    hs-source-dirs:  src-noop
+    hs-source-dirs:  src-unix
+    cpp-options:     -DUSE_OFD_LOCKING
+    exposed-modules: Lukko.OFD
+
+  elif !(os(solaris) || os(aix))
+    hs-source-dirs: src-flock
+    hs-source-dirs: src-noop
+    hs-source-dirs: src-unix
+    cpp-options:    -DUSE_FLOCK
+
+  else
+    hs-source-dirs: src-noop
+    hs-source-dirs: src-unix
+    cpp-options:    -DUSE_NOOP
+
+  -- Cabal check is silly
+  if (!os(windows) && !(os(solaris) || os(aix)))
+    exposed-modules: Lukko.FLock
+
+  other-modules:
+    Lukko.FD.Internal
+    Lukko.Internal
+
+test-suite test-thread
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   test
+  main-is:          Tests.hs
+  ghc-options:      -threaded
+  build-depends:
+    , async        ^>=2.2.2
+    , base
+    , filepath
+    , lukko
+    , tasty
+    , tasty-hunit
+    , temporary
+
+  if os(windows)
+    cpp-options: -DHAS_WINDOWS_LOCK
+
+  elif os(linux)
+    cpp-options: -DHAS_OFD_LOCKING
+    cpp-options: -DHAS_FLOCK
+
+  elif !(os(solaris) || os(aix))
+    cpp-options: -DHAS_FLOCK
+
+test-suite test-process
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   test
+  main-is:          TestProcess.hs
+  ghc-options:      -threaded
+  build-depends:
+    , base
+    , bytestring
+    , lukko
+
+  if os(windows)
+    cpp-options: -DHAS_WINDOWS_LOCK
+
+  elif os(linux)
+    cpp-options: -DHAS_OFD_LOCKING
+    cpp-options: -DHAS_FLOCK
+
+  elif !(os(solaris) || os(aix))
+    cpp-options: -DHAS_FLOCK
