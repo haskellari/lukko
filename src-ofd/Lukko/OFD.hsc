@@ -1,5 +1,5 @@
-{-# LANGUAGE InterruptibleFFI #-}
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE InterruptibleFFI #-}
 -- | Linux open file descriptor locking.
 -- 
 -- <https://www.gnu.org/software/libc/manual/html_node/Open-File-Description-Locks.html>
@@ -43,11 +43,8 @@ import GHC.IO.Exception
 import GHC.Ptr
 import System.Posix.Types (COff, CPid)
 
-#if !MIN_VERSION_base(4,8,0)
-import Data.Word (Word8)
-#endif
-
 import Lukko.Internal
+import Lukko.Internal.FillBytes
 import Lukko.FD.Internal
 
 -------------------------------------------------------------------------------
@@ -102,15 +99,6 @@ hUnlock h = do
 
 -- there is no alignment in old hsc2hs
 #let alignmentcompat t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
-
-#if !MIN_VERSION_base(4,8,0)
-fillBytes :: Ptr a -> Word8 -> Int -> IO ()
-fillBytes dest char size = do
-    _ <- memset dest (fromIntegral char) (fromIntegral size)
-    return ()
-
-foreign import ccall unsafe "string.h" memset  :: Ptr a -> CInt  -> CSize -> IO (Ptr a)
-#endif
 
 -------------------------------------------------------------------------------
 -- implementation

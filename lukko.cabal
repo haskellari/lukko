@@ -38,9 +38,11 @@ library
     Lukko.NoOp
 
   if os(windows)
-    hs-source-dirs: src-windows
-    hs-source-dirs: src-noop
-    cpp-options:    -DUSE_WINDOWS_LOCK
+    hs-source-dirs:  src-windows
+    hs-source-dirs:  src-noop
+    cpp-options:     -DUSE_WINDOWS_LOCK
+    exposed-modules: Lukko.Windows
+    c-sources:       cbits/windows.c
 
   elif os(linux)
     hs-source-dirs:  src-ofd
@@ -68,6 +70,8 @@ library
   other-modules:
     Lukko.FD.Internal
     Lukko.Internal
+    Lukko.Internal.FillBytes
+    Lukko.Internal.HandleToFD
 
 test-suite test-thread
   default-language: Haskell2010
