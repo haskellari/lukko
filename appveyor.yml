@@ -1,5 +1,9 @@
 clone_folder: "c:\\WORK"
 
+branches:
+  only:
+    - master
+
 environment:
   global:
     CABOPTS:  "--store-dir=C:\\SR --http-transport=plain-http"
