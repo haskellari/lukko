@@ -13,11 +13,11 @@ import qualified Data.ByteString as BS
 import Lukko
 
 #ifdef HAS_OFD_LOCKING
-import qualified Lukko.FLock as FLock
+import qualified Lukko.OFD as OFD
 #endif
 
 #ifdef HAS_FLOCK
-import qualified Lukko.OFD as OFD
+import qualified Lukko.FLock as FLock
 #endif
 
 main :: IO ()
