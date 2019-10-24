@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE InterruptibleFFI #-}
-module Lukko.FD.Internal (
+module Lukko.Internal.FD (
     FD (..),
     fdOpen,
     fdClose,

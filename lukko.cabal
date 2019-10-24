@@ -74,10 +74,10 @@ library
     exposed-modules: Lukko.FLock
 
   other-modules:
-    Lukko.FD.Internal
-    Lukko.Internal
+    Lukko.Internal.FD
     Lukko.Internal.FillBytes
     Lukko.Internal.HandleToFD
+    Lukko.Internal.Types
 
 test-suite test-thread
   default-language: Haskell2010

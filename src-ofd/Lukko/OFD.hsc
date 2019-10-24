@@ -43,9 +43,9 @@ import GHC.IO.Exception
 import GHC.Ptr
 import System.Posix.Types (COff, CPid)
 
-import Lukko.Internal
+import Lukko.Internal.FD
 import Lukko.Internal.FillBytes
-import Lukko.FD.Internal
+import Lukko.Internal.Types
 
 -------------------------------------------------------------------------------
 -- Support constants

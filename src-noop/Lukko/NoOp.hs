@@ -23,8 +23,8 @@ module Lukko.NoOp (
 import Control.Exception (throwIO)
 import System.IO         (Handle)
 
-import Lukko.FD.Internal
-import Lukko.Internal
+import Lukko.Internal.FD
+import Lukko.Internal.Types
 
 -- | A constants specifying whether file locking is supported.
 fileLockingSupported :: Bool

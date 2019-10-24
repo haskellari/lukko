@@ -33,9 +33,9 @@ import Foreign.Marshal.Utils
 import Foreign.Ptr (Ptr)
 import GHC.Windows
 
-import Lukko.Internal
+import Lukko.Internal.FD
 import Lukko.Internal.FillBytes
-import Lukko.FD.Internal
+import Lukko.Internal.Types
 
 #if defined(i386_HOST_ARCH)
 #define WINDOWS_CCONV stdcall

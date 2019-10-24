@@ -20,7 +20,7 @@ module Lukko (
 import Control.Monad (void)
 import System.IO (Handle)
 
-import Lukko.Internal
+import Lukko.Internal.Types
 
 #if defined(USE_OFD_LOCKING)
 import qualified Lukko.OFD as Impl

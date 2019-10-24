@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module Lukko.Internal where
+module Lukko.Internal.Types where
 
 import Control.Exception (Exception)
 import Data.Typeable (Typeable)
