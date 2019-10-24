@@ -26,6 +26,12 @@ source-repository head
   type:     git
   location: https://github.com/phadej/lukko/
 
+flag ofd-locking
+  default:     True
+  manual:      True
+  description:
+    Enable open file descriptor locking. Available on Linux (kernel 3.15, released Jun 8, 2014).
+
 library
   default-language:   Haskell2010
   hs-source-dirs:     src
@@ -38,11 +44,13 @@ library
     Lukko.NoOp
 
   if os(windows)
-    hs-source-dirs: src-windows
-    hs-source-dirs: src-noop
-    cpp-options:    -DUSE_WINDOWS_LOCK
+    hs-source-dirs:  src-windows
+    hs-source-dirs:  src-noop
+    cpp-options:     -DUSE_WINDOWS_LOCK
+    exposed-modules: Lukko.Windows
+    c-sources:       cbits/windows.c
 
-  elif os(linux)
+  elif (os(linux) && flag(ofd-locking))
     hs-source-dirs:  src-ofd
     hs-source-dirs:  src-flock
     hs-source-dirs:  src-noop
@@ -68,6 +76,8 @@ library
   other-modules:
     Lukko.FD.Internal
     Lukko.Internal
+    Lukko.Internal.FillBytes
+    Lukko.Internal.HandleToFD
 
 test-suite test-thread
   default-language: Haskell2010
@@ -87,7 +97,7 @@ test-suite test-thread
   if os(windows)
     cpp-options: -DHAS_WINDOWS_LOCK
 
-  elif os(linux)
+  elif (os(linux) && flag(ofd-locking))
     cpp-options: -DHAS_OFD_LOCKING
     cpp-options: -DHAS_FLOCK
 
@@ -108,7 +118,7 @@ test-suite test-process
   if os(windows)
     cpp-options: -DHAS_WINDOWS_LOCK
 
-  elif os(linux)
+  elif (os(linux) && flag(ofd-locking))
     cpp-options: -DHAS_OFD_LOCKING
     cpp-options: -DHAS_FLOCK
 

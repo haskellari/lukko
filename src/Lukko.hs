@@ -26,6 +26,8 @@ import Lukko.Internal
 import qualified Lukko.OFD as Impl
 #elif defined(USE_FLOCK)
 import qualified Lukko.FLock as Impl
+#elif defined(USE_WINDOWS_LOCK)
+import qualified Lukko.Windows as Impl
 #else
 import qualified Lukko.NoOp as Impl
 #endif
