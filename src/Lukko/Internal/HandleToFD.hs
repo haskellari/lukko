@@ -1,17 +1,18 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP         #-}
+{-# LANGUAGE Trustworthy #-}
 module Lukko.Internal.HandleToFD (ghcHandleToFd) where
 
-import System.IO (Handle)
 import qualified GHC.IO.FD as GHC (FD (..))
+import           System.IO (Handle)
 
 #if MIN_VERSION_base(4,10,0)
 import qualified GHC.IO.Handle.FD as GHC (handleToFd)
 #else
 import Control.Concurrent.MVar (readMVar)
-import GHC.IO.Handle.Types
-import GHC.IO.Handle.Internals
+import Data.Typeable           (cast)
 import GHC.IO.Exception
-import Data.Typeable (cast)
+import GHC.IO.Handle.Internals
+import GHC.IO.Handle.Types
 #endif
 
 ghcHandleToFd :: Handle -> IO GHC.FD

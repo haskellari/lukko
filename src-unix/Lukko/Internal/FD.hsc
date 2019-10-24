@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE InterruptibleFFI #-}
+{-# LANGUAGE Trustworthy #-}
 module Lukko.Internal.FD (
     FD (..),
     fdOpen,
@@ -23,9 +24,7 @@ import Lukko.Internal.HandleToFD (ghcHandleToFd)
 
 -- | Opaque /file descriptor/
 --
--- An @int@ on unix systems,
--- and @HANDLE@ on windows.
---
+-- This is a wrapper over 'CInt'
 newtype FD = FD CInt
 
 foreign import ccall interruptible "open"
@@ -57,6 +56,7 @@ fdClose (FD fd) =  do
     ret <- throwErrnoIfMinus1Retry "close" $ c_close fd
     return ()
 
+-- | Convert GHC 'Handle' to lukko 'FD'.
 handleToFd :: Handle -> IO FD
 handleToFd h = do
     GHC.FD {GHC.fdFD = fd} <- ghcHandleToFd h

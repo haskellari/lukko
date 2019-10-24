@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE Safe #-}
 module Lukko.Internal.Types where
 
 import Control.Exception (Exception)

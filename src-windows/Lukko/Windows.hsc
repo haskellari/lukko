@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE InterruptibleFFI #-}
+{-# LANGUAGE Trustworthy #-}
 -- | File locking for Windows.
 module Lukko.Windows (
     -- * Types

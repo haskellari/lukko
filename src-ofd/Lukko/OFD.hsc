@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE InterruptibleFFI #-}
+{-# LANGUAGE Trustworthy #-}
 -- | Linux open file descriptor locking.
 -- 
 -- <https://www.gnu.org/software/libc/manual/html_node/Open-File-Description-Locks.html>

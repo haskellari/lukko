@@ -1,5 +1,6 @@
 {-# LANGUAGE InterruptibleFFI #-}
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE Trustworthy #-}
 -- | File locking via POSIX @flock@.
 module Lukko.FLock (
     -- * Types
