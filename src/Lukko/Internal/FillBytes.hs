@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP              #-}
 {-# LANGUAGE InterruptibleFFI #-}
+{-# LANGUAGE Trustworthy      #-}
 module Lukko.Internal.FillBytes (fillBytes) where
 
 #if MIN_VERSION_base(4,8,0)

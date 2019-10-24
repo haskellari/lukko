@@ -2,9 +2,17 @@ cabal-version: 2.4
 name:          lukko
 version:       0.1
 synopsis:      File locking
-category:      System, Locking
+category:      System, Concurrency
 description:
   File locking in various flavours.
+  .
+  There are alternatives:
+  .
+  * @GHC.IO.Handle.Lock@ in @base >= 4.10@ is good enough for most use cases.
+    However, uses only @Handle@s so these locks cannot be used for intra-process locking.
+    (You should use e.g. @MVar@ in addition).
+  .
+  * <https://hackage.haskell.org/package/filelock filelock> doesn't support OFD locking.
   .
   /Lukko/ means lock in Finnish.
 
@@ -74,10 +82,10 @@ library
     exposed-modules: Lukko.FLock
 
   other-modules:
-    Lukko.FD.Internal
-    Lukko.Internal
+    Lukko.Internal.FD
     Lukko.Internal.FillBytes
     Lukko.Internal.HandleToFD
+    Lukko.Internal.Types
 
 test-suite test-thread
   default-language: Haskell2010

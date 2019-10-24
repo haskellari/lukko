@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE InterruptibleFFI #-}
+{-# LANGUAGE Trustworthy #-}
 -- | Linux open file descriptor locking.
 -- 
 -- <https://www.gnu.org/software/libc/manual/html_node/Open-File-Description-Locks.html>
@@ -43,9 +44,9 @@ import GHC.IO.Exception
 import GHC.Ptr
 import System.Posix.Types (COff, CPid)
 
-import Lukko.Internal
+import Lukko.Internal.FD
 import Lukko.Internal.FillBytes
-import Lukko.FD.Internal
+import Lukko.Internal.Types
 
 -------------------------------------------------------------------------------
 -- Support constants

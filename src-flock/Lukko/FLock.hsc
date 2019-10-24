@@ -1,5 +1,6 @@
 {-# LANGUAGE InterruptibleFFI #-}
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE Trustworthy #-}
 -- | File locking via POSIX @flock@.
 module Lukko.FLock (
     -- * Types
@@ -31,8 +32,8 @@ import Foreign.C.Types
 import GHC.Base
 import GHC.IO.Exception
 
-import Lukko.Internal
-import Lukko.FD.Internal
+import Lukko.Internal.FD
+import Lukko.Internal.Types
 
 -------------------------------------------------------------------------------
 -- Support constants

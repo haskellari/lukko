@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE InterruptibleFFI #-}
-module Lukko.FD.Internal (
+{-# LANGUAGE Trustworthy #-}
+module Lukko.Internal.FD (
     FD (..),
     fdOpen,
     fdClose,
@@ -18,8 +19,22 @@ import qualified GHC.IO.FD        as GHC (FD (..))
 
 import Lukko.Internal.HandleToFD (ghcHandleToFd)
 
+-- | Opaque /file descriptor/
+--
+-- This is a wrapper over 'HANDLE'
 newtype FD = FD HANDLE
 
+-- | Open file to be used for locking
+--
+-- @
+-- createFileW(path,
+--   GENERIC_WRITE | GENERIC_READ,
+--   FILE_SHARE_READ | FILE_SHARE_WRITE,
+--   securityAttributes, // bInheritHandle = TRUE
+--   OPEN_ALWAYS,
+--   FILE_ATTRIBUTE_NORMAL,
+--   NULL);
+-- @
 fdOpen :: FilePath -> IO FD
 fdOpen fp = withCWString fp $ \cfp -> do
     fw <- c_fdOpen cfp
@@ -27,6 +42,11 @@ fdOpen fp = withCWString fp $ \cfp -> do
     then return (FD fw)
     else getLastError >>= failWith "fdOpen"
 
+-- | Close lock file.
+--
+-- @
+-- CloseHandle(h);
+-- @
 fdClose :: FD -> IO ()
 fdClose (FD fw) = do
     r <- c_CloseHandle fw
@@ -34,6 +54,7 @@ fdClose (FD fw) = do
     then return ()
     else getLastError >>= failWith "fdClose"
 
+-- | Convert GHC 'Handle' to lukko 'FD'.
 handleToFd :: Handle -> IO FD
 handleToFd h = do
     GHC.FD {GHC.fdFD = fd} <- ghcHandleToFd h
