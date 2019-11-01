@@ -9,8 +9,8 @@ description:
   There are alternatives:
   .
   * @GHC.IO.Handle.Lock@ in @base >= 4.10@ is good enough for most use cases.
-    However, uses only @Handle@s so these locks cannot be used for intra-process locking.
-    (You should use e.g. @MVar@ in addition).
+  However, uses only @Handle@s so these locks cannot be used for intra-process locking.
+  (You should use e.g. @MVar@ in addition).
   .
   * <https://hackage.haskell.org/package/filelock filelock> doesn't support OFD locking.
   .
@@ -34,7 +34,7 @@ description:
 
 maintainer:    Oleg Grenrus <oleg.grenrus@iki.fi>
 license:       GPL-2.0-or-later AND BSD-3-Clause
-license-file:  LICENSE
+license-files: LICENSE LICENSE.GPLv2 LICENSE.GPLv3
 build-type:    Simple
 tested-with:
   GHC ==7.6.3
