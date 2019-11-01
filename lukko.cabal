@@ -1,4 +1,4 @@
-cabal-version: 2.4
+cabal-version: 2.2
 name:          lukko
 version:       0.1
 synopsis:      File locking
@@ -15,9 +15,25 @@ description:
   * <https://hackage.haskell.org/package/filelock filelock> doesn't support OFD locking.
   .
   /Lukko/ means lock in Finnish.
+  .
+  Submodules @Lukko.OFD@, @Lukko.Windows@ etc are available based on following conditions.
+  .
+  @
+  if os(windows)
+  \  cpp-options: -DHAS_WINDOWS_LOCK
+  .
+  elif (os(linux) && flag(ofd-locking))
+  \  cpp-options: -DHAS_OFD_LOCKING
+  \  cpp-options: -DHAS_FLOCK
+  .
+  elif !(os(solaris) || os(aix))
+  \  cpp-options: -DHAS_FLOCK
+  @
+  .
+  @Lukko.FLock@ is available on not (Windows or Solaris or AIX).
 
 maintainer:    Oleg Grenrus <oleg.grenrus@iki.fi>
-license:       GPL-2.0-or-later
+license:       GPL-2.0-or-later AND BSD-3-Clause
 license-file:  LICENSE
 build-type:    Simple
 tested-with:
