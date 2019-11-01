@@ -4,19 +4,25 @@ version:       0.1
 synopsis:      File locking
 category:      System, Concurrency
 description:
-  File locking in various flavours.
+  This package provides access to platform dependent file locking APIs:
   .
-  There are alternatives:
+  * Open file descriptor locking on Linux ("Lukko.OFD")
+  * @flock@ locking on unix platforms ("Lukko.FLock")
+  * Windows locking @LockFileEx@ ("Lukko.Windows")
+  * No-op locking, which throws exceptions ("Lukko.NoOp")
+  * "Lukko" module exports the best option for the target platform with uniform API.
   .
-  * @GHC.IO.Handle.Lock@ in @base >= 4.10@ is good enough for most use cases.
-  However, uses only @Handle@s so these locks cannot be used for intra-process locking.
-  (You should use e.g. @MVar@ in addition).
+  There are alternative file locking packages:
+  .
+  * "GHC.IO.Handle.Lock" in @base >= 4.10@ is good enough for most use cases.
+  However, uses only 'Handle's so these locks cannot be used for intra-process locking.
+  (You should use e.g. 'MVar' in addition).
   .
   * <https://hackage.haskell.org/package/filelock filelock> doesn't support OFD locking.
   .
   /Lukko/ means lock in Finnish.
   .
-  Submodules @Lukko.OFD@, @Lukko.Windows@ etc are available based on following conditions.
+  Submodules "Lukko.OFD", "Lukko.Windows" etc are available based on following conditions.
   .
   @
   if os(windows)
@@ -30,7 +36,8 @@ description:
   \  cpp-options: -DHAS_FLOCK
   @
   .
-  @Lukko.FLock@ is available on not (Windows or Solaris or AIX).
+  "Lukko.FLock" is available on not (Windows or Solaris or AIX).
+  "Lukko.NoOp" is always available.
 
 maintainer:    Oleg Grenrus <oleg.grenrus@iki.fi>
 license:       GPL-2.0-or-later AND BSD-3-Clause
@@ -69,7 +76,6 @@ library
 
   if os(windows)
     hs-source-dirs:  src-windows
-    hs-source-dirs:  src-noop
     cpp-options:     -DUSE_WINDOWS_LOCK
     exposed-modules: Lukko.Windows
     c-sources:       cbits/windows.c
@@ -77,19 +83,16 @@ library
   elif (os(linux) && flag(ofd-locking))
     hs-source-dirs:  src-ofd
     hs-source-dirs:  src-flock
-    hs-source-dirs:  src-noop
     hs-source-dirs:  src-unix
     cpp-options:     -DUSE_OFD_LOCKING
     exposed-modules: Lukko.OFD
 
   elif !(os(solaris) || os(aix))
     hs-source-dirs: src-flock
-    hs-source-dirs: src-noop
     hs-source-dirs: src-unix
     cpp-options:    -DUSE_FLOCK
 
   else
-    hs-source-dirs: src-noop
     hs-source-dirs: src-unix
     cpp-options:    -DUSE_NOOP
 
