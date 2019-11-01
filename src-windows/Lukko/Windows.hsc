@@ -6,6 +6,8 @@ module Lukko.Windows (
     -- * Types
     FileLockingNotSupported(..),
     fileLockingSupported,
+    FileLockingMethod (..),
+    fileLockingMethod,
     LockMode(..),
     -- * File descriptors
     FD,
@@ -53,6 +55,10 @@ import Lukko.Internal.Types
 -- | A constants specifying whether file locking is supported.
 fileLockingSupported :: Bool
 fileLockingSupported = True
+
+-- | A constant specifying this method
+fileLockingMethod :: FileLockingMethod
+fileLockingMethod = MethodWindows
 
 -------------------------------------------------------------------------------
 -- FD

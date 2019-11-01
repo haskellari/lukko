@@ -4,6 +4,8 @@
 module Lukko (
     FileLockingNotSupported(..),
     Impl.fileLockingSupported,
+    FileLockingMethod (..),
+    Impl.fileLockingMethod,
     LockMode(..),
     -- * File descriptors
     FD,
