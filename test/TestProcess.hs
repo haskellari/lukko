@@ -9,6 +9,7 @@ import System.Environment (getArgs)
 import System.IO          (Handle, IOMode (ReadWriteMode), hClose, openFile)
 
 import qualified Data.ByteString as BS
+import qualified Data.ByteString.Char8 as BS8
 
 import Lukko
 
@@ -26,7 +27,7 @@ main = withArgs $ \withLock -> do
     withLock $ do
         contents <- BS.readFile "test-actual"
         threadDelay 10000 -- 10 ms
-        BS.writeFile "test-actual" $ BS.append contents "another line\n"
+        BS.writeFile "test-actual" $ BS.append contents $ BS8.pack "another line\n"
 
 withArgs
     :: ((forall r. IO r -> IO r) -> IO ())
