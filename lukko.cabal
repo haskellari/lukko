@@ -1,8 +1,8 @@
-cabal-version: 2.2
-name:          lukko
-version:       0.1.1
-synopsis:      File locking
-category:      System, Concurrency
+cabal-version:      2.2
+name:               lukko
+version:            0.1.1
+synopsis:           File locking
+category:           System, Concurrency
 description:
   This package provides access to platform dependent file locking APIs:
   .
@@ -39,10 +39,11 @@ description:
   "Lukko.FLock" is available on not (Windows or Solaris or AIX).
   "Lukko.NoOp" is always available.
 
-maintainer:    Oleg Grenrus <oleg.grenrus@iki.fi>
-license:       GPL-2.0-or-later AND BSD-3-Clause
-license-files: LICENSE LICENSE.GPLv2 LICENSE.GPLv3
-build-type:    Simple
+maintainer:         Oleg Grenrus <oleg.grenrus@iki.fi>
+license:            GPL-2.0-or-later AND BSD-3-Clause
+license-files:      LICENSE LICENSE.GPLv2 LICENSE.GPLv3
+build-type:         Simple
+extra-source-files: CHANGELOG.md
 tested-with:
   GHC ==7.6.3
    || ==7.8.4
