@@ -1,18 +1,24 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP                 #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Main (main) where
 
-import Control.Concurrent       (threadDelay)
-import Control.Concurrent.Async (forConcurrently_)
-import Control.Exception        (bracket)
+import Control.Concurrent         (threadDelay)
+import Control.Concurrent.Async   (forConcurrently_)
+import Control.Exception          (bracket)
 import Data.IORef
-import System.FilePath          ((</>))
+import Data.Proxy                 (Proxy (..))
+import Data.Singletons.Bool       (reflectBool, SBoolI)
+import System.FilePath            ((</>))
 import System.IO
        (Handle, IOMode (ReadWriteMode), hClose, openFile)
-import System.IO.Temp           (withSystemTempDirectory)
-import Test.Tasty               (TestTree, defaultMain, testGroup)
-import Test.Tasty.HUnit         (testCase, (@=?))
+import System.IO.Temp             (withSystemTempDirectory)
+import Test.Tasty                 (TestTree, defaultMain, testGroup)
+import Test.Tasty.ExpectedFailure (ignoreTest)
+import Test.Tasty.HUnit           (testCase, (@=?))
 
 import Lukko
+
+import qualified Lukko.NoOp as NoOp
 
 #ifdef HAS_OFD_LOCKING
 import qualified Lukko.OFD as OFD
@@ -24,22 +30,25 @@ import qualified Lukko.FLock as FLock
 
 main :: IO ()
 main = defaultMain $ testGroup "lukko" $
-    [ testGroup "Lukko default" $ testSuite fdLock fdUnlock
-    | fileLockingSupported
+    [ testGroup "Lukko default" $ testSuite (Proxy :: Proxy FileLockingSupported) fileLockingSupported fdLock fdUnlock
+    , testGroup "Lukko.NoOp" $ testSuite (Proxy :: Proxy NoOp.FileLockingSupported) NoOp.fileLockingSupported NoOp.fdLock NoOp.fdUnlock
     ]
 #ifdef HAS_OFD_LOCKING
-    ++ [ testGroup "Lukko.OFD" $ testSuite OFD.fdLock OFD.fdUnlock ]
+    ++ [ testGroup "Lukko.OFD" $ testSuite (Proxy :: Proxy OFD.FileLockingSupported) OFD.fileLockingSupported OFD.fdLock OFD.fdUnlock ]
 #endif
 #ifdef HAS_FLOCK
-    ++ [ testGroup "Lukko.FLock" $ testSuite FLock.fdLock FLock.fdUnlock ]
+    ++ [ testGroup "Lukko.FLock" $ testSuite (Proxy :: Proxy FLock.FileLockingSupported) FLock.fileLockingSupported FLock.fdLock FLock.fdUnlock ]
 #endif
 
 testSuite
-    :: (FD -> LockMode -> IO ())
+    :: forall supported. SBoolI supported
+    => Proxy supported
+    -> Bool
+    -> (FD -> LockMode -> IO ())
     -> (FD -> IO ())
     -> [TestTree]
-testSuite implLock implUnlock =
-    [ testCase "concurrent threads" $ do
+testSuite suppP supp implLock implUnlock =
+    [ modify $ testCase "concurrent threads" $ do
         let n = 10 :: Int
         ref <- newIORef 0
 
@@ -53,8 +62,12 @@ testSuite implLock implUnlock =
 
         val <- readIORef ref
         val @=? n
+    , testCase "FileLockingSupported and fileLockingSupported agree" $
+          reflectBool suppP @=? supp
     ]
   where
+    modify | supp      = id
+           | otherwise = ignoreTest
     withLock = genWithLock implLock implUnlock
 
 genWithLock
