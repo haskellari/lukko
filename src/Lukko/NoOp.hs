@@ -7,6 +7,7 @@ module Lukko.NoOp (
     -- * Types
     FileLockingNotSupported(..),
     fileLockingSupported,
+    FileLockingSupported,
     FileLockingMethod (..),
     fileLockingMethod,
     LockMode(..),
@@ -32,6 +33,9 @@ import Lukko.Internal.Types
 -- | A constants specifying whether file locking is supported.
 fileLockingSupported :: Bool
 fileLockingSupported = False
+
+-- | A type level 'fileLockingSupported'.
+type FileLockingSupported = 'False
 
 -- | A constant specifying this method
 fileLockingMethod :: FileLockingMethod

@@ -4,6 +4,7 @@
 module Lukko (
     FileLockingNotSupported(..),
     Impl.fileLockingSupported,
+    Impl.FileLockingSupported,
     FileLockingMethod (..),
     Impl.fileLockingMethod,
     LockMode(..),

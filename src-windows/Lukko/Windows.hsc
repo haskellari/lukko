@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE InterruptibleFFI #-}
 {-# LANGUAGE Trustworthy #-}
 -- | File locking for Windows.
@@ -6,6 +7,7 @@ module Lukko.Windows (
     -- * Types
     FileLockingNotSupported(..),
     fileLockingSupported,
+    FileLockingSupported,
     FileLockingMethod (..),
     fileLockingMethod,
     LockMode(..),
@@ -55,6 +57,9 @@ import Lukko.Internal.Types
 -- | A constants specifying whether file locking is supported.
 fileLockingSupported :: Bool
 fileLockingSupported = True
+
+-- | A type level 'fileLockingSupported'.
+type FileLockingSupported = True
 
 -- | A constant specifying this method
 fileLockingMethod :: FileLockingMethod
