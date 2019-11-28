@@ -43,9 +43,9 @@ import Lukko.Internal.FillBytes
 import Lukko.Internal.Types
 
 #if defined(i386_HOST_ARCH)
-#define WINDOWS_CCONV stdcall
+##define WINDOWS_CCONV stdcall
 #elif defined(x86_64_HOST_ARCH)
-#define WINDOWS_CCONV ccall
+##define WINDOWS_CCONV ccall
 #else
 #error Unknown mingw32 arch
 #endif
