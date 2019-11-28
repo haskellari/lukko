@@ -2,7 +2,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE InterruptibleFFI #-}
 {-# LANGUAGE Trustworthy #-}
--- | File locking via POSIX @flock@.
+-- | File locking via BSD-style @flock(2)@.
 module Lukko.FLock (
     -- * Types
     FileLockingNotSupported(..),
@@ -58,15 +58,15 @@ fileLockingMethod = MethodFLock
 -- FD
 -------------------------------------------------------------------------------
 
--- | Lock using OFD locks.
+-- | Lock using BSD-style locks.
 fdLock :: FD -> LockMode -> IO ()
 fdLock fd mode = void (lockImpl Nothing fd "fdLock" mode True)
 
--- | Try to lock using OFD locks.
+-- | Try to lock using BSD-style locks.
 fdTryLock :: FD -> LockMode -> IO Bool
 fdTryLock fd mode = lockImpl Nothing fd "fdTryLock" mode False
 
--- | Unlock using OFD locks.
+-- | Unlock using BSD-style locks.
 fdUnlock :: FD -> IO ()
 fdUnlock = unlockImpl
 
@@ -74,19 +74,19 @@ fdUnlock = unlockImpl
 -- Handle
 -------------------------------------------------------------------------------
 
--- | Lock using OFD locks.
+-- | Lock using BSD-style locks.
 hLock :: Handle -> LockMode -> IO ()
 hLock h mode = do
     fd <- handleToFd h
     void (lockImpl (Just h) fd "hLock" mode True)
 
--- | Try to lock using OFD locks.
+-- | Try to lock using BSD-style locks.
 hTryLock :: Handle -> LockMode -> IO Bool
 hTryLock h mode = do
     fd <- handleToFd h
     lockImpl (Just h) fd "hTryLock" mode False
 
--- | Unlock using OFD locks.
+-- | Unlock using BSD-style locks.
 hUnlock :: Handle -> IO ()
 hUnlock h = do
     fd <- handleToFd h
