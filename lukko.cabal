@@ -1,7 +1,6 @@
 cabal-version:      2.2
 name:               lukko
-version:            0.1.1.1
-x-revision:         1
+version:            0.1.1.2
 synopsis:           File locking
 category:           System, Concurrency
 description:

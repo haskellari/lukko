@@ -115,6 +115,7 @@ install:
   - |
     echo "packages: ." >> cabal.project
   - |
+    echo "allow-newer: tasty-expected-failure-0.11.1.2:base" >> cabal.project
   - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(lukko)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
@@ -140,6 +141,7 @@ script:
   - |
     echo "packages: ${PKGDIR_lukko}" >> cabal.project
   - |
+    echo "allow-newer: tasty-expected-failure-0.11.1.2:base" >> cabal.project
   - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(lukko)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true

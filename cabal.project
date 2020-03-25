@@ -3,3 +3,5 @@ tests:    True
 
 package handle-lock
   ghc-options: -Wall
+
+allow-newer: tasty-expected-failure-0.11.1.2:base
