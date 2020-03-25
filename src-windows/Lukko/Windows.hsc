@@ -2,6 +2,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE InterruptibleFFI #-}
 {-# LANGUAGE Trustworthy #-}
+
 -- | File locking for Windows.
 module Lukko.Windows (
     -- * Types
@@ -43,9 +44,9 @@ import Lukko.Internal.FillBytes
 import Lukko.Internal.Types
 
 #if defined(i386_HOST_ARCH)
-#define WINDOWS_CCONV stdcall
+##define WINDOWS_CCONV stdcall
 #elif defined(x86_64_HOST_ARCH)
-#define WINDOWS_CCONV ccall
+##define WINDOWS_CCONV ccall
 #else
 #error Unknown mingw32 arch
 #endif
@@ -69,15 +70,15 @@ fileLockingMethod = MethodWindows
 -- FD
 -------------------------------------------------------------------------------
 
--- | Lock using OFD locks.
+-- | Lock using Win32 locks.
 fdLock :: FD -> LockMode -> IO ()
 fdLock fd mode = void (lockImpl Nothing fd "fdLock" mode True)
 
--- | Try to lock using OFD locks.
+-- | Try to lock using Win32 locks.
 fdTryLock :: FD -> LockMode -> IO Bool
 fdTryLock fd mode = lockImpl Nothing fd "fdTryLock" mode False
 
--- | Unlock using OFD locks.
+-- | Unlock using Win32 locks.
 fdUnlock :: FD -> IO ()
 fdUnlock = unlockImpl
 
@@ -85,19 +86,19 @@ fdUnlock = unlockImpl
 -- Handle
 -------------------------------------------------------------------------------
 
--- | Lock using OFD locks.
+-- | Lock using Win32 locks.
 hLock :: Handle -> LockMode -> IO ()
 hLock h mode = do
     fd <- handleToFd h
     void (lockImpl (Just h) fd "hLock" mode True)
 
--- | Try to lock using OFD locks.
+-- | Try to lock using Win32 locks.
 hTryLock :: Handle -> LockMode -> IO Bool
 hTryLock h mode = do
     fd <- handleToFd h
     lockImpl (Just h) fd "hTryLock" mode False
 
--- | Unlock using OFD locks.
+-- | Unlock using Win32 locks.
 hUnlock :: Handle -> IO ()
 hUnlock h = do
     fd <- handleToFd h
@@ -117,7 +118,7 @@ lockImpl _ (FD wh) ctx mode block = do
     -- "locking a region that goes beyond the current end-of-file position is
     -- not an error", hence we pass maximum value as the number of bytes to
     -- lock.
-    fix $ \retry -> c_LockFileEx wh flags 0 0xffffffff 0xffffffff ovrlpd >>= \res -> case res of
+    fix $ \retry -> c_LockFileEx wh flags 0 #{const INFINITE} #{const INFINITE} ovrlpd >>= \res -> case res of
       True  -> return True
       False -> getLastError >>= \err -> case () of
         _ | not block && err == #{const ERROR_LOCK_VIOLATION} -> return False
@@ -134,31 +135,16 @@ unlockImpl :: FD -> IO ()
 unlockImpl (FD wh) = do
   allocaBytes sizeof_OVERLAPPED $ \ovrlpd -> do
     fillBytes ovrlpd 0 sizeof_OVERLAPPED
-    c_UnlockFileEx wh 0 0xffffffff 0xffffffff ovrlpd >>= \res -> case res of
+    c_UnlockFileEx wh 0 #{const INFINITE} #{const INFINITE} ovrlpd >>= \res -> case res of
       True  -> return ()
       False -> getLastError >>= failWith "fdUnlock"
   where
     sizeof_OVERLAPPED = #{size OVERLAPPED}
-#if defined(i386_HOST_ARCH)
 
 -- https://docs.microsoft.com/en-gb/windows/win32/api/fileapi/nf-fileapi-lockfileex
-foreign import stdcall interruptible "LockFileEx"
+foreign import WINDOWS_CCONV interruptible "LockFileEx"
   c_LockFileEx :: HANDLE -> DWORD -> DWORD -> DWORD -> DWORD -> Ptr () -> IO BOOL
 
 -- https://docs.microsoft.com/en-gb/windows/win32/api/fileapi/nf-fileapi-unlockfileex
-foreign import stdcall interruptible "UnlockFileEx"
+foreign import WINDOWS_CCONV interruptible "UnlockFileEx"
   c_UnlockFileEx :: HANDLE -> DWORD -> DWORD -> DWORD -> Ptr () -> IO BOOL
-
-#elif defined(x86_64_HOST_ARCH)
-
--- https://docs.microsoft.com/en-gb/windows/win32/api/fileapi/nf-fileapi-lockfileex
-foreign import ccall interruptible "LockFileEx"
-  c_LockFileEx :: HANDLE -> DWORD -> DWORD -> DWORD -> DWORD -> Ptr () -> IO BOOL
-
--- https://docs.microsoft.com/en-gb/windows/win32/api/fileapi/nf-fileapi-unlockfileex
-foreign import ccall interruptible "UnlockFileEx"
-  c_UnlockFileEx :: HANDLE -> DWORD -> DWORD -> DWORD -> Ptr () -> IO BOOL
-
-#else
-#error Unknown mingw32 arch
-#endif
