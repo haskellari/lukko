@@ -1,5 +1,5 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE Safe #-}
+{-# LANGUAGE Safe      #-}
 -- | Non-operating locks.
 --
 -- All functions throw 'FileLockingNotImplemented'.

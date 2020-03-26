@@ -1,9 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE Safe #-}
+{-# LANGUAGE Safe               #-}
 module Lukko.Internal.Types where
 
 import Control.Exception (Exception)
-import Data.Typeable (Typeable)
+import Data.Typeable     (Typeable)
 
 -- | Exception thrown by 'hLock' on non-Windows platforms that don't support
 -- @flock@.
