@@ -110,7 +110,9 @@ hUnlock h = do
 -------------------------------------------------------------------------------
 
 -- there is no alignment in old hsc2hs
-#let alignmentcompat t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
+#if !MIN_TOOL_VERSION_hsc2hs(0,68,7)
+#let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
+#endif
 
 -------------------------------------------------------------------------------
 -- implementation
@@ -128,7 +130,7 @@ data FLock  = FLock { l_type   :: CShort
 
 instance Storable FLock where
     sizeOf _ = #{size struct flock}
-    alignment _ = #{alignmentcompat struct flock}
+    alignment _ = #{alignment struct flock}
     poke ptr x = do
         fillBytes ptr 0 (sizeOf x)
         #{poke struct flock, l_type}   ptr (l_type x)
