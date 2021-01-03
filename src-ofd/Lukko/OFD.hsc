@@ -1,3 +1,4 @@
+{-# LANGUAGE CApiFFI #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE InterruptibleFFI #-}
@@ -116,7 +117,7 @@ hUnlock h = do
 -- implementation
 -------------------------------------------------------------------------------
 
-foreign import ccall interruptible "fcntl"
+foreign import capi interruptible "fcntl.h fcntl"
   c_fcntl :: CInt -> CInt -> Ptr FLock -> IO CInt
 
 data FLock  = FLock { l_type   :: CShort
