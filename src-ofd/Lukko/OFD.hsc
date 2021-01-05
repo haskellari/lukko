@@ -111,7 +111,17 @@ hUnlock h = do
 -------------------------------------------------------------------------------
 
 -- there is no alignment in old hsc2hs
+#if defined(MIN_TOOL_VERSION_hsc2hs)
 #if !MIN_TOOL_VERSION_hsc2hs(0,68,7)
+#define HAS_NO_ALIGNMENT 1
+#endif
+#else
+-- if run directly (cabal sets MIN_TOOL_VERSION_hsc2hs macro)
+-- assume the worst.
+#define HAS_NO_ALIGNMENT 1
+#endif
+
+#ifdef HAS_NO_ALIGNMENT
 #let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
 #endif
 
