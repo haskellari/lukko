@@ -1,3 +1,4 @@
+{-# LANGUAGE CApiFFI #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE InterruptibleFFI #-}
 {-# LANGUAGE Trustworthy #-}
@@ -27,7 +28,7 @@ import Lukko.Internal.HandleToFD (ghcHandleToFd)
 -- This is a wrapper over 'CInt'
 newtype FD = FD CInt
 
-foreign import ccall interruptible "open"
+foreign import capi interruptible "fcntl.h open"
    c_open :: CString -> CInt -> CMode -> IO CInt
 
 foreign import ccall interruptible "close"
