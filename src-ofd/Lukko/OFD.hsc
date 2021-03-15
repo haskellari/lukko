@@ -35,7 +35,21 @@ module Lukko.OFD (
 
 #define _GNU_SOURCE
 #include <unistd.h>
+
+-- Support for file description locks (F_OFD_SETLKW and F_OFD_SETLK) was added
+-- to glibc in version 2.20. If we have an older version then we must get the
+-- functionality directly from the linux headers.
+--
+-- See glibc 2.20 release notes: <https://sourceware.org/legacy-ml/libc-alpha/2014-09/msg00088.html>
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+#if __GLIBC_PREREQ(2, 20)
 #include <fcntl.h>
+#else
+#include <linux/fcntl.h>
+#endif
+#else
+#include <fcntl.h>
+#endif
 
 import Control.Monad (void)
 import System.IO (Handle)
