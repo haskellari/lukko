@@ -29,7 +29,7 @@ description:
   if os(windows)
   \  cpp-options: -DHAS_WINDOWS_LOCK
   .
-  elif (os(linux) && flag(ofd-locking))
+  elif (os(linux) && !flag(no-ofd-locking))
   \  cpp-options: -DHAS_OFD_LOCKING
   \  cpp-options: -DHAS_FLOCK
   .
