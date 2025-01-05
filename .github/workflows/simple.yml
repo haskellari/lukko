@@ -32,7 +32,7 @@ jobs:
         uses: haskell-actions/setup@v2
         with:
           ghc-version: ${{ matrix.ghc }}
-          cabal-version: '3.10.1.0'
+          cabal-version: '3.14.1.0'
 
       - name: Cache
         uses: actions/cache@v4
@@ -87,11 +87,11 @@ jobs:
         run: |
           gcc --version
           make --version
-          curl https://downloads.haskell.org/ghcup/0.1.22.0/i386-linux-ghcup-0.1.22.0 > ghcup
+          curl https://downloads.haskell.org/ghcup/0.1.40.0/i386-linux-ghcup-0.1.40.0 > ghcup
           chmod a+x ghcup
           whoami
           echo $HOME
-          GHCUP_INSTALL_BASE_PREFIX=$HOME ./ghcup install cabal 3.10.3.0 --set
+          GHCUP_INSTALL_BASE_PREFIX=$HOME ./ghcup install cabal 3.14.1.0 --set
           GHCUP_INSTALL_BASE_PREFIX=$HOME ./ghcup install ghc ${{matrix.ghc }} --set
 
       - name: Update
