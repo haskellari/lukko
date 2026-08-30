@@ -33,6 +33,7 @@ module Lukko.OFD (
     hUnlock,
     ) where
 
+#define _FILE_OFFSET_BITS 64
 #define _GNU_SOURCE
 #include <unistd.h>
 
